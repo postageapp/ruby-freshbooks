@@ -5,7 +5,10 @@ require 'cgi'
 
 module FreshBooks
   API_VERSION = '2.1'
-
+  
+  class << self; attr_accessor :logger; end
+  self.logger = Logger.new(STDOUT)
+  
   # provides a Hash-like response object with structure
   # isomorphic to actual xml response, slightly tidied.
   class Response < Hash
@@ -129,7 +132,7 @@ module FreshBooks
       # FreshBooks' API unfortunately redirects to a login search
       # html page if you specify an endpoint that doesn't exist
       # (i.e. typo in subdomain) instead of returning a 404
-      def handle_response
+      def handle_response(*args)
         if loc = last_response['location'] and loc.match /loginSearch\.php$/
           resp = Net::HTTPNotFound.new(1.1, 404, "Not Found")
           resp.instance_variable_set :@read, true
@@ -153,6 +156,7 @@ EOS
     def self.perform_freshbooks_api_request(http_method, path, options) #:nodoc:
       options = default_options.dup.merge(options)
       process_cookies(options)
+      FreshBooks.logger.debug options
       FreshBooksAPIRequest.new(http_method, path, options).perform
     end
   end
