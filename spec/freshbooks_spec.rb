@@ -1,4 +1,4 @@
-require 'lib/ruby-freshbooks'
+require File.expand_path('../lib/ruby-freshbooks', File.dirname(__FILE__))
 
 def build_xml(data)
   FreshBooks::Client.build_xml data, Builder::XmlMarkup.new(:indent => 2)

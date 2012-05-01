@@ -2,6 +2,7 @@ require 'httparty'
 require 'builder'
 require 'openssl'
 require 'cgi'
+require 'logger'
 
 module FreshBooks
   API_VERSION = '2.1'
